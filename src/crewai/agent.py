@@ -21,7 +21,6 @@ from pydantic import (
 from pydantic_core import PydanticCustomError
 
 from crewai.agents import CacheHandler, CrewAgentExecutor, CrewAgentParser, ToolsHandler
-from crewai.memory.contextual.contextual_memory import ContextualMemory
 from crewai.utilities import I18N, Logger, Prompts, RPMController
 from crewai.utilities.token_counter_callback import TokenCalcHandler, TokenProcess
 
@@ -213,13 +212,8 @@ class Agent(BaseModel):
                 task=task_prompt, context=context
             )
 
-        if self.crew and self.crew.memory:
-            contextual_memory = ContextualMemory(
-                self.crew._short_term_memory,
-                self.crew._long_term_memory,
-                self.crew._entity_memory,
-            )
-            memory = contextual_memory.build_context_for_task(task, context)
+        if self.crew and self.crew.memory and self.crew.contextual_memory:
+            memory = self.crew.contextual_memory.build_context_for_task(task, context)
             if memory.strip() != "":
                 task_prompt += self.i18n.slice("memory").format(memory=memory)
 

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from crewai.memory.memory import Memory
 from crewai.memory.short_term.short_term_memory_item import ShortTermMemoryItem
 from crewai.memory.storage.rag_storage import RAGStorage
@@ -12,9 +14,17 @@ class ShortTermMemory(Memory):
     MemoryItem instances.
     """
 
-    def __init__(self, crew=None, embedder_config=None):
+    def __init__(
+        self,
+        db_storage_path: Path | None = None,
+        crew=None,
+        embedder_config=None,
+    ):
         storage = RAGStorage(
-            type="short_term", embedder_config=embedder_config, crew=crew
+            type="short_term",
+            db_storage_path=db_storage_path,
+            embedder_config=embedder_config,
+            crew=crew,
         )
         super().__init__(storage)
 

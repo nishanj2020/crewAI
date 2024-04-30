@@ -2,6 +2,7 @@ import contextlib
 import io
 import logging
 import os
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from embedchain import App
@@ -9,7 +10,6 @@ from embedchain.llm.base import BaseLlm
 from embedchain.vectordb.chroma import InvalidDimensionException
 
 from crewai.memory.storage.interface import Storage
-from crewai.utilities.paths import db_storage_path
 
 
 @contextlib.contextmanager
@@ -37,17 +37,28 @@ class RAGStorage(Storage):
     search efficiency.
     """
 
-    def __init__(self, type, allow_reset=True, embedder_config=None, crew=None):
+    def __init__(
+        self,
+        type: str,
+        db_storage_path: Path | None = None,
+        allow_reset=True,
+        embedder_config=None,
+        crew=None,
+    ):
         super().__init__()
         if (
             not os.getenv("OPENAI_API_KEY")
             and not os.getenv("OPENAI_BASE_URL") == "https://api.openai.com/v1"
         ):
             os.environ["OPENAI_API_KEY"] = "fake"
+        if db_storage_path is None:
+            db_storage_path = db_storage_path()
 
         agents = crew.agents if crew else []
         agents = [agent.role for agent in agents]
         agents = "_".join(agents)
+
+        dir = db_storage_path / {type} / {agents}
 
         config = {
             "app": {
@@ -63,7 +74,7 @@ class RAGStorage(Storage):
                 "provider": "chroma",
                 "config": {
                     "collection_name": type,
-                    "dir": f"{db_storage_path()}/{type}/{agents}",
+                    "dir": str(dir.absolute()),
                     "allow_reset": allow_reset,
                 },
             },

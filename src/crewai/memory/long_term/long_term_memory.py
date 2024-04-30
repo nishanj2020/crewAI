@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Any, Dict
 
 from crewai.memory.long_term.long_term_memory_item import LongTermMemoryItem
@@ -14,8 +15,8 @@ class LongTermMemory(Memory):
     LongTermMemoryItem instances.
     """
 
-    def __init__(self):
-        storage = LTMSQLiteStorage()
+    def __init__(self, db_path: Path):
+        storage = LTMSQLiteStorage(db_path)
         super().__init__(storage)
 
     def save(self, item: LongTermMemoryItem) -> None:  # type: ignore # BUG?: Signature of "save" incompatible with supertype "Memory"

@@ -1,13 +1,15 @@
 import pytest
 
+
 from crewai.memory.long_term.long_term_memory import LongTermMemory
 from crewai.memory.long_term.long_term_memory_item import LongTermMemoryItem
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def long_term_memory():
     """Fixture to create a LongTermMemory instance"""
-    return LongTermMemory()
+    data_dir = pytest.tmp_path_factory.mktemp("long_term_memory")
+    return LongTermMemory(data_dir)
 
 
 def test_save_and_search(long_term_memory):
