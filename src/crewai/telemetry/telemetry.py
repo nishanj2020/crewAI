@@ -60,7 +60,8 @@ class Telemetry:
         except BaseException as e:
             if isinstance(
                 e,
-                (SystemExit, KeyboardInterrupt, GeneratorExit, asyncio.CancelledError),
+                (SystemExit, KeyboardInterrupt,
+                 GeneratorExit, asyncio.CancelledError),
             ):
                 raise  # Re-raise the exception to not interfere with system signals
             self.ready = False
@@ -85,15 +86,18 @@ class Telemetry:
                     "crewai_version",
                     pkg_resources.get_distribution("crewai").version,
                 )
-                self._add_attribute(span, "python_version", platform.python_version())
+                self._add_attribute(span, "python_version",
+                                    platform.python_version())
                 self._add_attribute(span, "crew_id", str(crew.id))
                 self._add_attribute(span, "crew_process", crew.process)
                 self._add_attribute(
                     span, "crew_language", crew.prompt_file if crew.i18n else "None"
                 )
                 self._add_attribute(span, "crew_memory", crew.memory)
-                self._add_attribute(span, "crew_number_of_tasks", len(crew.tasks))
-                self._add_attribute(span, "crew_number_of_agents", len(crew.agents))
+                self._add_attribute(
+                    span, "crew_number_of_tasks", len(crew.tasks))
+                self._add_attribute(
+                    span, "crew_number_of_agents", len(crew.agents))
                 self._add_attribute(
                     span,
                     "crew_agents",
@@ -134,9 +138,11 @@ class Telemetry:
                     ),
                 )
                 self._add_attribute(span, "platform", platform.platform())
-                self._add_attribute(span, "platform_release", platform.release())
+                self._add_attribute(
+                    span, "platform_release", platform.release())
                 self._add_attribute(span, "platform_system", platform.system())
-                self._add_attribute(span, "platform_version", platform.version())
+                self._add_attribute(
+                    span, "platform_version", platform.version())
                 self._add_attribute(span, "cpus", os.cpu_count())
                 span.set_status(Status(StatusCode.OK))
                 span.end()
@@ -281,7 +287,8 @@ class Telemetry:
                     "crewai_version",
                     pkg_resources.get_distribution("crewai").version,
                 )
-                self._add_attribute(crew._execution_span, "crew_output", output)
+                self._add_attribute(crew._execution_span,
+                                    "crew_output", output)
                 self._add_attribute(
                     crew._execution_span,
                     "crew_tasks_output",
@@ -309,9 +316,11 @@ class Telemetry:
             pass
 
     def _safe_llm_attributes(self, llm):
-        attributes = ["name", "model_name", "base_url", "model", "top_k", "temperature"]
+        attributes = ["name", "model_name", "base_url",
+                      "model", "top_k", "temperature"]
         if llm:
-            safe_attributes = {k: v for k, v in vars(llm).items() if k in attributes}
+            safe_attributes = {k: v for k, v in vars(
+                llm).items() if k in attributes}
             safe_attributes["class"] = llm.__class__.__name__
             return safe_attributes
         return {}
