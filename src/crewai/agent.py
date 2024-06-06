@@ -238,7 +238,7 @@ class Agent(BaseModel):
                 "input": task_prompt,
                 "tool_names": self.agent_executor.tools_names,
                 "tools": self.agent_executor.tools_description,
-            }
+            },{"run_name":self.role}
         )["output"]
 
         if self.max_rpm:
