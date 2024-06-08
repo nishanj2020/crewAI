@@ -18,6 +18,8 @@ from pydantic_core import PydanticCustomError
 
 from crewai.agent import Agent
 from crewai.agents.cache import CacheHandler
+from crewai.memory.memory import get_memory_paths
+from crewai.memory.contextual.contextual_memory import ContextualMemory
 from crewai.memory.entity.entity_memory import EntityMemory
 from crewai.memory.long_term.long_term_memory import LongTermMemory
 from crewai.memory.short_term.short_term_memory import ShortTermMemory
@@ -59,10 +61,6 @@ class Crew(BaseModel):
     _logger: Logger = PrivateAttr()
     _file_handler: FileHandler = PrivateAttr()
     _cache_handler: InstanceOf[CacheHandler] = PrivateAttr(default=CacheHandler())
-    _short_term_memory: Optional[InstanceOf[ShortTermMemory]] = PrivateAttr()
-    _long_term_memory: Optional[InstanceOf[LongTermMemory]] = PrivateAttr()
-    _entity_memory: Optional[InstanceOf[EntityMemory]] = PrivateAttr()
-
     cache: bool = Field(default=True)
     model_config = ConfigDict(arbitrary_types_allowed=True)
     tasks: List[Task] = Field(default_factory=list)
@@ -72,6 +70,10 @@ class Crew(BaseModel):
     memory: bool = Field(
         default=False,
         description="Whether the crew should use memory to store memories of it's execution",
+    )
+    contextual_memory: Optional[InstanceOf[ContextualMemory]] = Field(
+        default=None,
+        description="The memory storage for the crew.",
     )
     embedder: Optional[dict] = Field(
         default={"provider": "openai"},
@@ -162,12 +164,22 @@ class Crew(BaseModel):
     @model_validator(mode="after")
     def create_crew_memory(self) -> "Crew":
         """Set private attributes."""
-        if self.memory:
-            self._long_term_memory = LongTermMemory()
-            self._short_term_memory = ShortTermMemory(
-                crew=self, embedder_config=self.embedder
+        if self.memory and not self.contextual_memory:
+            long_term_memory_path, short_term_memory_path, entity_memory_path = (
+                get_memory_paths()
             )
-            self._entity_memory = EntityMemory(crew=self, embedder_config=self.embedder)
+            long_term_memory = LongTermMemory(db_path=long_term_memory_path)
+            short_term_memory = ShortTermMemory(
+                crew=self, db_path=short_term_memory_path, embedder_config=self.embedder
+            )
+            entity_memory = EntityMemory(
+                crew=self, db_path=entity_memory_path, embedder_config=self.embedder
+            )
+            self.contextual_memory = ContextualMemory(
+                short_term_memory=short_term_memory,
+                long_term_memory=long_term_memory,
+                entity_memory=entity_memory,
+            )
         return self
 
     @model_validator(mode="after")

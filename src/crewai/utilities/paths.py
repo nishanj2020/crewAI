@@ -4,7 +4,7 @@ from pathlib import Path
 import appdirs
 
 
-def db_storage_path():
+def db_storage_path() -> Path:
     app_name = get_project_directory_name()
     app_author = "CrewAI"
 

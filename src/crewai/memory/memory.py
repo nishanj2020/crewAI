@@ -1,6 +1,18 @@
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 from crewai.memory.storage.interface import Storage
+from crewai.utilities.paths import db_storage_path
+
+
+def get_memory_paths(memory_path: Path | None = None) -> tuple[Path, Path, Path]:
+    if not memory_path:
+        memory_path = db_storage_path()
+
+    long_term_memory_path = memory_path / "long_term_memory_storage.db"
+    short_term_memory_path = memory_path
+    entity_memory_path = memory_path
+    return long_term_memory_path, short_term_memory_path, entity_memory_path
 
 
 class Memory:
