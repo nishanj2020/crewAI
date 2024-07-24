@@ -19,19 +19,30 @@
 
 ## Table of contents
 
-- [Why CrewAI?](#why-crewai)
-- [Getting Started](#getting-started)
-- [Key Features](#key-features)
-- [Examples](#examples)
-  - [Quick Tutorial](#quick-tutorial)
-  - [Write Job Descriptions](#write-job-descriptions)
-  - [Trip Planner](#trip-planner)
-  - [Stock Analysis](#stock-analysis)
-- [Connecting Your Crew to a Model](#connecting-your-crew-to-a-model)
-- [How CrewAI Compares](#how-crewai-compares)
-- [Contribution](#contribution)
-- [Telemetry](#telemetry)
-- [License](#license)
+- [**crewAI**](#crewai)
+  - [Table of contents](#table-of-contents)
+  - [Why CrewAI?](#why-crewai)
+  - [Getting Started](#getting-started)
+    - [1. Installation](#1-installation)
+    - [2. Setting Up Your Crew](#2-setting-up-your-crew)
+  - [Key Features](#key-features)
+  - [Examples](#examples)
+    - [Quick Tutorial](#quick-tutorial)
+    - [Write Job Descriptions](#write-job-descriptions)
+    - [Trip Planner](#trip-planner)
+    - [Stock Analysis](#stock-analysis)
+  - [Connecting Your Crew to a Model](#connecting-your-crew-to-a-model)
+  - [How CrewAI Compares](#how-crewai-compares)
+  - [Contribution](#contribution)
+    - [Installing Dependencies](#installing-dependencies)
+    - [Virtual Env](#virtual-env)
+    - [Pre-commit hooks](#pre-commit-hooks)
+    - [Running Tests](#running-tests)
+    - [Running static type checks](#running-static-type-checks)
+    - [Packaging](#packaging)
+    - [Installing Locally](#installing-locally)
+  - [Telemetry](#telemetry)
+  - [License](#license)
 
 ## Why CrewAI?
 
@@ -235,7 +246,7 @@ poetry run pytest
 ### Running static type checks
 
 ```bash
-poetry run mypy
+poetry run mypy src
 ```
 
 ### Packaging
